@@ -143,6 +143,73 @@ int g_blk[] = {B0,B1,B2,B3,B4,B5,B6,B7,B8,B9,BA,BB,BC,BD,BE,BF,BG,BH,BI};
 
 
 #include <stdio.h>
+#include <string.h>
+
+int		set_tet(int bin)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	while (i < 19)
+		if (bin == g_blk[i++])
+			break;
+	if (i == 19)
+		return (-1);
+	j = 0;
+	while (g_tet[j] != -1)
+		j++;
+	g_tet[j] = i;
+	return (0);
+}
+
+int		convert(int bin)
+{
+	while (bin <= 0b0000111111111111)
+		bin = bin << 4;
+	while ((bin & 0b1000100010001000) == 0)
+	{
+		bin = ((bin & 0b1111000000000000) << 1) + (bin & 0b0000111111111111);
+		bin = ((bin & 0b0000111100000000) << 1) + (bin & 0b1111000011111111);
+		bin = ((bin & 0b0000000011110000) << 1) + (bin & 0b1111111100001111);
+		bin = ((bin & 0b0000000000001111) << 1) + (bin & 0b1111111111110000);
+	}
+	return (bin);
+}
+
+int		to_bin(char buff[21])
+{
+	int		val;
+	int		i;
+
+	i = -1;
+	val = 0;
+	while (i++ < 20)
+		if (i == 20 && (buff[i] == '\n' || buff[i] == '\0'))
+			return (convert(val));
+		else if (i == 20)
+			return (-1);
+		else if (i != 0 && (i + 1) % 5 == 0 && buff[i] == '\n')
+			continue;
+		else if (i != 0 && (i + 1) % 5 == 0)
+			return (-1);
+		else if (buff[i] == '.')
+			val *= 2;
+		else if (buff[i] == '#')
+		{
+			val *= 2;
+			val += 1;
+		}
+		else
+			return (-1);
+	return (-1);
+}
+
+// tests 
+// char buff[21];
+// strcpy(buff, "....\n.##.\n.##.\n....\n");
+// printf("target:\n%d\nto_bin:\n%d\n", 0b1100110000000000, to_bin(buff));
 
 int get_block_index() {
 	return (0);
