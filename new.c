@@ -137,10 +137,11 @@
 
 
 
-int g_board[110][110]; // clean
-int g_tet[27]; // clean
-int g_blk[] = {B0,B1,B2,B3,B4,B5,B6,B7,B8,B9,BA,BB,BC,BD,BE,BF,BG,BH,BI};
-
+char	g_board[110][110];
+char	g_smallest[110][110];
+char	g_tet[27];
+int		g_blk[] = {B0,B1,B2,B3,B4,B5,B6,B7,B8,B9,BA,BB,BC,BD,BE,BF,BG,BH,BI}; // norm
+int		g_size = 110; // norm
 
 #include <stdio.h>
 #include <string.h>
@@ -160,7 +161,7 @@ int		set_tet(int bin)
 	j = 0;
 	while (g_tet[j] != -1)
 		j++;
-	g_tet[j] = i;
+	g_tet[j] = i - 1;
 	return (0);
 }
 
@@ -206,16 +207,93 @@ int		to_bin(char buff[21])
 	return (-1);
 }
 
-// tests 
-// char buff[21];
-// strcpy(buff, "....\n.##.\n.##.\n....\n");
-// printf("target:\n%d\nto_bin:\n%d\n", 0b1100110000000000, to_bin(buff));
+/*
+int		main(void)
+{
+	int i, j;
+	// init g_tet
+	i = 0;
+	while (i < 27)
+		g_tet[i++] = -1;
 
-int get_block_index() {
+	// init g_board
+	i = 0;
+	while (i < 110)
+	{
+		j = 0;
+		while (j < 110)
+			g_board[i][j++] = 0;
+		i++;
+	}
+
+	char buff[21];
+   	strcpy(buff, "....\n.##.\n.##.\n....\n"); // 2
+	printf("set_tet(to_bin(buff)): %d\n", set_tet(to_bin(buff)));
+
+   	strcpy(buff, "....\n.##.\n.##.\n..#.\n"); // junk
+	printf("set_tet(to_bin(buff)): %d\n", set_tet(to_bin(buff)));
+
+   	strcpy(buff, "....\n.##.\n.##.\n.."); // junk
+	printf("set_tet(to_bin(buff)): %d\n", set_tet(to_bin(buff)));
+
+   	strcpy(buff, "....\n.#..\n.#..\n.##.\n"); // 12
+	printf("set_tet(to_bin(buff)): %d\n", set_tet(to_bin(buff)));
+	// print g_tet
+	i = 0;
+	while (g_tet[i] != -1)
+		printf("%d\n", (int)g_tet[i++]);
+	return (0);
+}
+*/
+
+int		get_board_size()
+{
+	int		size;
+	int		i;
+
+	size = 0;
+	while (42)
+	{
+		i = 0;
+		while (i < size + 1)
+			if (g_board[size][i++] > 0)
+				break;
+		if (i != size + 1)
+		{
+			size++;
+			continue;
+		}
+		i = 0;
+		while (i < size + 1)
+			if (g_board[i++][size] > 0)
+				break;
+		if (i != size + 1)
+		{
+			size++;
+			continue;
+		}
+		return (size);
+	}
+}
+
+void	print_board()
+{
+	int		i;
+
+	i = 0;
+	while (i < g_size)
+	{
+		// put g_board or g_smallest for debug
+		write(1, g_board[i], g_size);
+		write(1, "\n", 1);
+	}
+}
+
+int		get_block_index() {
 	return (0);
 }
 
-void put_mask(int teti)
+void	put_mask(int teti)
 {
 	int i = 3, j;
 	int tet = g_blk[teti];
