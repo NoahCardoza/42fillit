@@ -137,13 +137,14 @@
 
 #define BIT(i) (1 << i)
 #define TET_BIT(row, col) (BIT(((row*4) + col)))
+#define MAX 20
 
-char	g_board[110][110];
-char	g_board_cpy[110][110];
-char	g_smallest[110][110];
+char	g_board[MAX][MAX];
+char	g_board_cpy[MAX][MAX];
+char	g_smallest[MAX][MAX];
 char	g_tet[27];
 int		g_blk[] = {B0,B1,B2,B3,B4,B5,B6,B7,B8,B9,BA,BB,BC,BD,BE,BF,BG,BH,BI};
-int g_size = 110;
+int g_size = MAX;
 
 #include <stdio.h>
 #include <string.h>
@@ -240,7 +241,7 @@ int		get_board_size()
 	}
 }
 
-void	print_board()
+void	print_board(char board[MAX][MAX])
 {
 	int		r;
 	int		c;
@@ -252,16 +253,12 @@ void	print_board()
 		c = 0;
 		while (c < g_size)
 		{
-			write(1, (g_board[r][c] ? &g_board[r][c] : "."), 1);
+			write(1, (board[r][c] ? &board[r][c] : "."), 1);
 			c++;
 		}
 		r++;
 		write(1, "\n", 1);
 	}
-}
-
-int		get_block_index() {
-	return (0);
 }
 
 void	put_mask(int teti)
@@ -309,7 +306,7 @@ int place_if(int row, int col, int teti)
 	r = 4;
 	while (--r >= 0 && (c = 4))
 		while (--c >= 0)
-			if (TET_BIT(r, c) & btet && g_board[3 - r + row][3 - c + col])
+			if (TET_BIT(r, c) & btet && !(3 - r + row >= g_size || 3 - c + col >= g_size) && g_board[3 - r + row][3 - c + col])
 				return (0);
 	r = 4;
 	while (--r >= 0 && (c = 4))
@@ -325,10 +322,10 @@ void	board_copy()
 	int col;
 
 	row = 0;
-	while (row < 110)
+	while (row < MAX)
 	{
 		col = -1;
-		while (++col < 110)
+		while (++col < MAX)
 		{
 			g_board_cpy[row][col] = g_board[row][col];
 		}
@@ -336,15 +333,19 @@ void	board_copy()
 	}
 }
 
+
 void bruticus(int teti)
 {
-	int row = 0;
-	int col = 0;
+	int row;
+	int col;
 	int size;
-
-	while (row < 110)
+	print_board(g_board);
+	// printf("%d\n", teti);
+	row = 0;
+	while (row < g_size)
 	{
-		while (col < 110)
+		col = 0;
+		while (col < g_size)
 		{
 			if (place_if(row, col, teti))
 			{
@@ -358,6 +359,12 @@ void bruticus(int teti)
 					else
 						bruticus(teti + 1);
 				}
+				// else
+				// {
+				// 	unplace(row, col, teti);
+				// 	col  = !++row;
+				// 	continue ;
+				// }
 				unplace(row, col, teti);
 			}
 			col++;
@@ -377,10 +384,10 @@ int main()
 
 	// init g_board
 	i = 0;
-	while (i < 110)
+	while (i < MAX)
 	{
 	    j = 0;
-	    while (j < 110)
+	    while (j < MAX)
 	        g_board[i][j++] = 0;
 	    i++;
 	}
@@ -394,6 +401,8 @@ int main()
 
 	// print_board();
 	bruticus(0);
+	print_board(g_board);
+	print_board(g_board_cpy);
 
 	return (0);
 }
