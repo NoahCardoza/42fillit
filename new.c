@@ -136,7 +136,7 @@
 #define BI 0b0100110010000000
 
 #define BIT(i) (1 << i)
-#define TET_BIT(x, y) (BIT(((y*4) + x)))
+#define TET_BIT(row, col) (BIT(((row*4) + col)))
 
 char	g_board[110][110];
 char	g_board_cpy[110][110];
@@ -144,7 +144,6 @@ char	g_smallest[110][110];
 char	g_tet[27];
 int		g_blk[] = {B0,B1,B2,B3,B4,B5,B6,B7,B8,B9,BA,BB,BC,BD,BE,BF,BG,BH,BI};
 int g_size = 110;
-
 
 #include <stdio.h>
 #include <string.h>
@@ -243,20 +242,20 @@ int		get_board_size()
 
 void	print_board()
 {
-	int		i;
-	int		j;
+	int		r;
+	int		c;
 
-	i = 0;
-	while (i < g_size)
+	r = 0;
+	while (r < g_size)
 	{
 		// put g_board or g_smallest for debug
-		j = 0;
-		while (j < g_size)
+		c = 0;
+		while (c < g_size)
 		{
-			write(1, (g_board[j][i] ? &g_board[j][i] : "."), 1);
-			j++;
+			write(1, (g_board[r][c] ? &g_board[r][c] : "."), 1);
+			c++;
 		}
-		i++;
+		r++;
 		write(1, "\n", 1);
 	}
 }
@@ -288,35 +287,35 @@ void	put_mask(int teti)
 
 void unplace(int row, int col, int teti)
 {
-	int i;
-	int j;
+	int r;
+	int c;
 	int btet;
 	btet = g_blk[g_tet[teti]];
-	i = 4;
-	while (--i >= 0 && (j = 4))
-		while (--j >= 0)
-			if (TET_BIT(i, j) & btet)
-				g_board[ 3 - i + row][3 - j + col] = 0;
+	r = 4;
+	while (--r >= 0 && (c = 4))
+		while (--c >= 0)
+			if (TET_BIT(r, c) & btet)
+				g_board[3 - r + row][3 - c + col] = 0;
 }
 
 int place_if(int row, int col, int teti)
 {
-	int i;
-	int j;
+	int r;
+	int c;
 	int btet;
 	int tet;
 	btet = g_blk[g_tet[teti]];
 	tet = g_blk[g_tet[teti]];
-	i = 4;
-	while (--i >= 0 && (j = 4))
-		while (--j >= 0)
-			if (TET_BIT(i, j) & btet && g_board[ 3 - i + row][3 - j + col])
+	r = 4;
+	while (--r >= 0 && (c = 4))
+		while (--c >= 0)
+			if (TET_BIT(r, c) & btet && g_board[3 - r + row][3 - c + col])
 				return (0);
-	i = 4;
-	while (--i >= 0 && (j = 4))
-		while (--j >= 0)
-			if (TET_BIT(i, j) & btet)
-				g_board[ 3 - i + row][3 - j + col] = 65 + teti;
+	r = 4;
+	while (--r >= 0 && (c = 4))
+		while (--c >= 0)
+			if (TET_BIT(r, c) & btet)
+				g_board[3 - r + row][3 - c + col] = 65 + teti;
 	return (1);
 }
 
