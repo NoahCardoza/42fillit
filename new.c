@@ -143,7 +143,7 @@ char	g_smallest[110][110];
 char	g_tet[27];
 int		g_blk[] = {B0,B1,B2,B3,B4,B5,B6,B7,B8,B9,BA,BB,BC,BD,BE,BF,BG,BH,BI}; // norm
 // int		g_size = 110; // norm
-int g_size = 10;
+int g_size = 110;
 
 
 #include <stdio.h>
@@ -292,7 +292,7 @@ void	print_board()
 		j = 0;
 		while (j < g_size)
 		{
-			write(1, (g_board[i][j] ? &g_board[i][j] : "."), 1);
+			write(1, (g_board[j][i] ? &g_board[j][i] : "."), 1);
 			j++;
 		}
 		i++;
@@ -347,7 +347,7 @@ void	put_mask(int teti)
 // 	}
 // }
 
-void unplace(int x, int y, int teti)
+void unplace(int row, int col, int teti)
 {
 	int i;
 	int j;
@@ -357,10 +357,10 @@ void unplace(int x, int y, int teti)
 	while (--i >= 0 && (j = 4))
 		while (--j >= 0)
 			if (TET_BIT(i, j) & btet)
-				g_board[ 3 - i + x][3 - j + y] = 0;
+				g_board[ 3 - i + row][3 - j + col] = 0;
 }
 
-int place_if(int x, int y, int teti)
+int place_if(int row, int col, int teti)
 {
 	int i;
 	int j;
@@ -371,50 +371,53 @@ int place_if(int x, int y, int teti)
 	i = 4;
 	while (--i >= 0 && (j = 4))
 		while (--j >= 0)
-			if (TET_BIT(i, j) & btet && g_board[ 3 - i + x][3 - j + y])
+			if (TET_BIT(i, j) & btet && g_board[ 3 - i + row][3 - j + col])
 				return (0);
 	i = 4;
 	while (--i >= 0 && (j = 4))
 		while (--j >= 0)
 			if (TET_BIT(i, j) & btet)
-				g_board[ 3 - i + x][3 - j + y] = 65 + teti;
+				g_board[ 3 - i + row][3 - j + col] = 65 + teti;
 	return (1);
 }
 
 
 int bruticus(int teti)
 {
-	int x = 0;
-	int y = 0;
-	while (x < 110)
+	int row = 0;
+	int col = 0;
+	while (row < 110)
 	{
-		while (y < 110)
+		while (col < 110)
 		{
-			if (place_if(x, y, teti))
+			if (place_if(row, col, teti))
 			{
-				if (g_tet[teti + 1] == -1) // if we are at the last tet in the stack
-					// if square is smaller, copy board to smallest board g_var
-				// else
-					// bruticus(teti + 1);
-				unplace(x, y, teti);
+				if (get_board_size() <= g_size)
+				{
+					if (g_tet[teti + 1] == -1) // if we are at the last tet in the stack
+						// if square is smaller, copy board to smallest board g_var
+					// else
+						// bruticus(teti + 1);
+				}
+				unplace(row, col, teti);
 			}
-			y++;
+			col++;
 		}
-		x++;
+		row++;
 	}
 	return (0);
 }
 
 int main()
 {
-	g_tet[0] = 3;
+	g_tet[0] = 1;
 	g_tet[1] = 5;
 
 	printf("%d\n", place_if(0,0,0));
-	printf("%d\n", place_if(1,0,1));
+	get_board_size();
 
 	print_board();
-	printf("%d\n", get_board_size());
+	// printf("%d\n", );
 	// put_mask(0);
 	// put_mask(1);
 	// put_mask(2);
