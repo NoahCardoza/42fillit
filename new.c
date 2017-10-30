@@ -136,18 +136,19 @@
 #define BI 0b0100110010000000
 
 #define BIT(i) (1 << i)
-// #define ABS(v) (v)
 #define TET_BIT(x, y) (BIT(((y*4) + x)))
- 
 
 char	g_board[110][110];
 char	g_smallest[110][110];
 char	g_tet[27];
 int		g_blk[] = {B0,B1,B2,B3,B4,B5,B6,B7,B8,B9,BA,BB,BC,BD,BE,BF,BG,BH,BI}; // norm
-int		g_size = 110; // norm
+// int		g_size = 110; // norm
+int g_size = 10;
+
 
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 int		set_tet(int bin)
 {
@@ -254,7 +255,7 @@ int		get_board_size()
 	int		size;
 	int		i;
 
-	size = 0;
+	size = 1;
 	while (42)
 	{
 		i = 0;
@@ -282,12 +283,19 @@ int		get_board_size()
 void	print_board()
 {
 	int		i;
+	int		j;
 
 	i = 0;
 	while (i < g_size)
 	{
 		// put g_board or g_smallest for debug
-		write(1, g_board[i], g_size);
+		j = 0;
+		while (j < g_size)
+		{
+			write(1, (g_board[i][j] ? &g_board[i][j] : "."), 1);
+			j++;
+		}
+		i++;
 		write(1, "\n", 1);
 	}
 }
@@ -296,7 +304,6 @@ int		get_block_index() {
 	return (0);
 }
 
-<<<<<<< HEAD
 void	put_mask(int teti)
 {
 	int i = 3, j;
@@ -387,8 +394,8 @@ int bruticus(int teti)
 			{
 				if (g_tet[teti + 1] == -1) // if we are at the last tet in the stack
 					// if square is smaller, copy board to smallest board g_var
-				else
-					bruticus(teti + 1);
+				// else
+					// bruticus(teti + 1);
 				unplace(x, y, teti);
 			}
 			y++;
@@ -400,8 +407,14 @@ int bruticus(int teti)
 
 int main()
 {
-	g_tet[0] = 3;	
+	g_tet[0] = 3;
+	g_tet[1] = 5;
+
 	printf("%d\n", place_if(0,0,0));
+	printf("%d\n", place_if(1,0,1));
+
+	print_board();
+	printf("%d\n", get_board_size());
 	// put_mask(0);
 	// put_mask(1);
 	// put_mask(2);
