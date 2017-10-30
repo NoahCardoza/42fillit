@@ -137,14 +137,14 @@
 
 #define BIT(i) (1 << i)
 #define TET_BIT(row, col) (BIT(((row*4) + col)))
-#define MAX 20
+#define MAX 30
 
 char	g_board[MAX][MAX];
 char	g_board_cpy[MAX][MAX];
 char	g_smallest[MAX][MAX];
 char	g_tet[27];
 int		g_blk[] = {B0,B1,B2,B3,B4,B5,B6,B7,B8,B9,BA,BB,BC,BD,BE,BF,BG,BH,BI};
-int g_size = MAX;
+int		g_size = MAX;
 
 #include <stdio.h>
 #include <string.h>
@@ -220,19 +220,19 @@ int		get_board_size()
 	while (42)
 	{
 		i = 0;
-		while (i < size + 1)
+		while (i < MAX - size)
 			if (g_board[size][i++] > 0)
 				break;
-		if (i != size + 1)
+		if (i != MAX - size)
 		{
 			size++;
 			continue;
 		}
 		i = 0;
-		while (i < size + 1)
+		while (i < MAX - size)
 			if (g_board[i++][size] > 0)
 				break;
-		if (i != size + 1)
+		if (i != MAX - size)
 		{
 			size++;
 			continue;
@@ -249,7 +249,6 @@ void	print_board(char board[MAX][MAX])
 	r = 0;
 	while (r < g_size)
 	{
-		// put g_board or g_smallest for debug
 		c = 0;
 		while (c < g_size)
 		{
@@ -263,9 +262,12 @@ void	print_board(char board[MAX][MAX])
 
 void	put_mask(int teti)
 {
-	int i = 3, j;
-	int tet = g_blk[teti];
+	int		i;
+	int		j;
+	int		tet;
 
+	i = 3;
+	tet = g_blk[teti];
 	while (i >= 0)
 	{
 		j = 3;
@@ -282,7 +284,7 @@ void	put_mask(int teti)
 	}
 }
 
-void unplace(int row, int col, int teti)
+void	unplace(int row, int col, int teti)
 {
 	int r;
 	int c;
@@ -295,7 +297,7 @@ void unplace(int row, int col, int teti)
 				g_board[3 - r + row][3 - c + col] = 0;
 }
 
-int place_if(int row, int col, int teti)
+int		place_if(int row, int col, int teti)
 {
 	int r;
 	int c;
@@ -338,11 +340,12 @@ void	board_copy()
 }
 
 
-void bruticus(int teti)
+void	bruticus(int teti)
 {
 	int row;
 	int col;
 	int size;
+
 	row = 0;
 	while (row < g_size)
 	{
@@ -377,16 +380,40 @@ void bruticus(int teti)
 	}
 }
 
-int main()
+int		bruticus2(int teti)
 {
-	int i;
-	int j;
-	// init g_tet
-	i = 0;
-	while (i < 27)
-	    g_tet[i++] = -1;
+	int row;
+	int col;
+	int size;
 
-	// init g_board
+	row = 0;
+	while (row < g_size)
+	{
+		col = 0;
+		while (col < g_size)
+		{
+			if (place_if(row, col, teti))
+			{
+				if (g_tet[teti + 1] == -1) // if we are at the last tet in the stack
+				{
+					print_board(g_board);
+					return (1);
+				}
+				else
+					return(bruticus2(teti + 1));
+			}
+			col++;
+		}
+		row++;
+	}
+	return (0);
+}
+
+void	clear_board()
+{
+	int		i;
+	int		j;
+
 	i = 0;
 	while (i < MAX)
 	{
@@ -395,19 +422,64 @@ int main()
 	        g_board[i][j++] = 0;
 	    i++;
 	}
-	g_tet[0] = 1;
-	g_tet[1] = 9;
-	g_tet[2] = 2;
-	g_tet[3] = 4;
+}
+
+int		parse()
+{
+	int i;
+	// init g_tet
+	i = 0;
+	while (i < 27)
+	    g_tet[i++] = -1;
+
+	clear_board();
+	g_tet[0] = 18;
+	g_tet[1] = 18;
+	g_tet[2] = 18;
+	g_tet[3] = 18;
+	g_tet[4] = 18;
+	g_tet[5] = 18;
+	g_tet[6] = 18;
+	g_tet[7] = 18;
+	g_tet[8] = 18;
+	g_tet[9] = 18;
+	g_tet[10] = 18;
+	g_tet[11] = 18;
+	g_tet[12] = 18;
+	g_tet[13] = 18;
+	g_tet[14] = 18;
+	g_tet[15] = 18;
+	g_tet[16] = 18;
+	g_tet[17] = 18;
+	g_tet[18] = 18;
+	g_tet[19] = 18;
+	g_tet[20] = 18;
+	g_tet[21] = 18;
+	g_tet[22] = 18;
+	g_tet[23] = 18;
+	g_tet[24] = 18;
+	g_tet[25] = 18;
 
 	// printf("%d\n", place_if(0,0,0));
-	// get_board_size();
-
-	// print_board();
-	bruticus(0);
+	// bruticus(0);
+	g_size = 1;
+	while (g_size++)
+	{
+		clear_board();
+		if (bruticus2(0))
+			break;
+	}
 	printf("%d\n", g_size);
-	// print_board(g_board);
 	// print_board(g_board_cpy);
 
+	return (0);
+}
+
+int		main(int ac, char **av)
+{
+	if (ac != 2)
+		return (write(1, "error\n", 6));
+	if (parse())
+		return (write(1, "error\n", 6));
 	return (0);
 }
