@@ -135,7 +135,10 @@
 #define BH 0b1100011000000000
 #define BI 0b0100110010000000
 
-
+#define BIT(i) (1 << i)
+// #define ABS(v) (v)
+#define TET_BIT(x, y) (BIT(((y*4) + x)))
+ 
 
 char	g_board[110][110];
 char	g_smallest[110][110];
@@ -293,6 +296,7 @@ int		get_block_index() {
 	return (0);
 }
 
+<<<<<<< HEAD
 void	put_mask(int teti)
 {
 	int i = 3, j;
@@ -315,50 +319,93 @@ void	put_mask(int teti)
 }
 
 // int can_place(int x, int y, int tet)
+// void put_mask(int teti)
 // {
-// 	int i = 0;
-// 	int j = 0;
+// 	int i = 3, j;
+// 	int tet = g_blk[teti];
 
-// 	while (i < 4)
+// 	while (i >= 0)
 // 	{
-// 		while (j < 4)
+// 		j = 3;
+// 		while (j >= 0)
 // 		{
-
-// 			j++;
+// 			if (TET_BIT(i, j) & tet)
+// 				printf("%c", 65 + teti);
+// 			else
+// 				printf(".");
+// 			j--;
 // 		}
-// 		i++;
+// 		printf("\n");
+// 		i--;
 // 	}
 // }
 
+void unplace(int x, int y, int teti)
+{
+	int i;
+	int j;
+	int btet;
+	btet = g_blk[g_tet[teti]];
+	i = 4;
+	while (--i >= 0 && (j = 4))
+		while (--j >= 0)
+			if (TET_BIT(i, j) & btet)
+				g_board[ 3 - i + x][3 - j + y] = 0;
+}
 
-// int bruticus()
-// {
-// 	int x = 0;
-// 	int y = 0;
-// 	int i = 0;
-// 	while (x < 110)
-// 	{
-// 		while (y < 110)
-// 		{
-// 			if (can_place(x, y, 1))
-// 			{
+int place_if(int x, int y, int teti)
+{
+	int i;
+	int j;
+	int btet;
+	int tet;
+	btet = g_blk[g_tet[teti]];
+	tet = g_blk[g_tet[teti]];
+	i = 4;
+	while (--i >= 0 && (j = 4))
+		while (--j >= 0)
+			if (TET_BIT(i, j) & btet && g_board[ 3 - i + x][3 - j + y])
+				return (0);
+	i = 4;
+	while (--i >= 0 && (j = 4))
+		while (--j >= 0)
+			if (TET_BIT(i, j) & btet)
+				g_board[ 3 - i + x][3 - j + y] = 65 + teti;
+	return (1);
+}
 
-// 			}
-// 			y++;
-// 		}
-// 		x++;
-// 	}
-// }
 
-
-
+int bruticus(int teti)
+{
+	int x = 0;
+	int y = 0;
+	while (x < 110)
+	{
+		while (y < 110)
+		{
+			if (place_if(x, y, teti))
+			{
+				if (g_tet[teti + 1] == -1) // if we are at the last tet in the stack
+					// if square is smaller, copy board to smallest board g_var
+				else
+					bruticus(teti + 1);
+				unplace(x, y, teti);
+			}
+			y++;
+		}
+		x++;
+	}
+	return (0);
+}
 
 int main()
 {
-	put_mask(0);
-	put_mask(1);
-	put_mask(2);
-	put_mask(3);
+	g_tet[0] = 3;	
+	printf("%d\n", place_if(0,0,0));
+	// put_mask(0);
+	// put_mask(1);
+	// put_mask(2);
+	// put_mask(3);
 	return (0);
 	// // init g_tet
 	// i = 0;
