@@ -306,8 +306,12 @@ int place_if(int row, int col, int teti)
 	r = 4;
 	while (--r >= 0 && (c = 4))
 		while (--c >= 0)
-			if (TET_BIT(r, c) & btet && !(3 - r + row >= g_size || 3 - c + col >= g_size) && g_board[3 - r + row][3 - c + col])
+		{
+			// (3 - r + row <= g_size && 3 - c + col <= g_size)
+			// printf("(%d, %d) : [%d]\n", 3 - r + row, 3 - c + col, g_size);
+			if (TET_BIT(r, c) & btet && ((3 - r + row >= g_size || 3 - c + col >= g_size) || g_board[3 - r + row][3 - c + col]))
 				return (0);
+		}
 	r = 4;
 	while (--r >= 0 && (c = 4))
 		while (--c >= 0)
@@ -339,8 +343,6 @@ void bruticus(int teti)
 	int row;
 	int col;
 	int size;
-	print_board(g_board);
-	// printf("%d\n", teti);
 	row = 0;
 	while (row < g_size)
 	{
@@ -349,11 +351,13 @@ void bruticus(int teti)
 		{
 			if (place_if(row, col, teti))
 			{
-				if ((size = get_board_size()) <= g_size)
+				if ((size = get_board_size()) < g_size)
 				{
 					if (g_tet[teti + 1] == -1) // if we are at the last tet in the stack
 					{
 						g_size = size;
+						print_board(g_board);
+						printf("copying\n");
 						board_copy();
 					}
 					else
@@ -401,8 +405,9 @@ int main()
 
 	// print_board();
 	bruticus(0);
-	print_board(g_board);
-	print_board(g_board_cpy);
+	printf("%d\n", g_size);
+	// print_board(g_board);
+	// print_board(g_board_cpy);
 
 	return (0);
 }
