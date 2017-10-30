@@ -239,6 +239,19 @@ int get_block_index() {
 // 	}
 // }
 
+void unplace(int x, int y, int teti)
+{
+	int i;
+	int j;
+	int btet;
+	btet = g_blk[g_tet[teti]];
+	i = 4;
+	while (--i >= 0 && (j = 4))
+		while (--j >= 0)
+			if (TET_BIT(i, j) & btet)
+				g_board[ 3 - i + x][3 - j + y] = 0;
+}
+
 int place_if(int x, int y, int teti)
 {
 	int i;
@@ -255,7 +268,7 @@ int place_if(int x, int y, int teti)
 	i = 4;
 	while (--i >= 0 && (j = 4))
 		while (--j >= 0)
-			if (TET_BIT(i, j))
+			if (TET_BIT(i, j) & btet)
 				g_board[ 3 - i + x][3 - j + y] = 65 + teti;
 	return (1);
 }
@@ -275,7 +288,7 @@ int bruticus(int teti)
 					// if square is smaller, copy board to smallest board g_var
 				else
 					bruticus(teti + 1);
-				unplace(x, y, teti);					 
+				unplace(x, y, teti);
 			}
 			y++;
 		}
@@ -284,12 +297,9 @@ int bruticus(int teti)
 	return (0);
 }
 
-
-
-
 int main()
 {
-	g_tet[0] = 3;
+	g_tet[0] = 3;	
 	printf("%d\n", place_if(0,0,0));
 	// put_mask(0);
 	// put_mask(1);
