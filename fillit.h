@@ -6,7 +6,7 @@
 /*   By: nocardoz <nocardoz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/22 19:46:06 by nocardoz          #+#    #+#             */
-/*   Updated: 2017/10/30 18:33:24 by ayip             ###   ########.fr       */
+/*   Updated: 2017/10/31 00:39:45 by ayip             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@
 # define BB 0b0010111000000000
 # define BC 0b1000100011000000
 # define BD 0b1110100000000000
-# define BE 0b1100001000100000
+# define BE 0b1100010001000000
 # define BF 0b0110110000000000
 # define BG 0b1000110001000000
 # define BH 0b1100011000000000
@@ -67,24 +67,21 @@
 # define MAX 26
 # define NUMBLK 19
 
-# ifndef G_BLK
+# if defined G_BLK
 
-int		g_blk[] = {B0, B1, B2, B3, B4, B5, B6, B7, B8, B9,
+const int	g_blk[] = {B0, B1, B2, B3, B4, B5, B6, B7, B8, B9,
 	BA, BB, BC, BD, BE, BF, BG, BH, BI};
 
 # endif
 
-char	g_board[MAX][MAX];
-char	g_board_cpy[MAX][MAX];
-char	g_smallest[MAX][MAX];
-char	g_tet[MAX];
-int		g_size;
-int		g_fd;
+char		g_board[MAX][MAX];
+char		g_board_cpy[MAX][MAX];
+char		g_smallest[MAX][MAX];
+char		g_tet[MAX];
+int			g_size;
+int			g_fd;
 
-int		set_tet(int bin);
-void	clear_board();
-int		to_bin(char buff[21]);
-int		get_board_size();
-void	print_board(char board[MAX][MAX]);
+int			set_tet(int bin);
+int			bruticus2(int teti);
 
 #endif
