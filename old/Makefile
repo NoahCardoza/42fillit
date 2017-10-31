@@ -3,23 +3,33 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ayip <marvin@42.fr>                        +#+  +:+       +#+         #
+#    By: nocardoz <nocardoz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2017/10/30 18:44:58 by ayip              #+#    #+#              #
-#    Updated: 2017/10/30 18:50:56 by ayip             ###   ########.fr        #
+#    Created: 2017/08/21 14:12:44 by nocardoz          #+#    #+#              #
+#    Updated: 2017/09/22 20:06:37 by nocardoz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME=fillit
+NAME = fillit
+LIBFT = libs/libft
+
+# HEADERS = headers $(LIBFT)
+
+FILESC = srcs/*.c
+# FILESO = 
+
 .PHONY: all clean fclean re
 
 all: $(NAME)
 
+# $(FILESO):
+#	@gcc -Wall -Wextra -Werror -c $(FILESC)
+# $(FILESO)
 $(NAME):
-	@gcc -Wall -Wextra -Werror main.c fillit.c -o $(NAME)
+	@gcc $(FILESC) -o $(NAME) -I headers -I $(LIBFT) -L$(LIBFT) -lft
 
 clean:
-	@ls 1>/dev/null
+	@rm -f *.o
 
 fclean: clean
 	@rm -f $(NAME)

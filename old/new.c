@@ -137,18 +137,20 @@
 
 #define BIT(i) (1 << i)
 #define TET_BIT(row, col) (BIT(((row*4) + col)))
-#define MAX 30
+#define MAX 26
 
 char	g_board[MAX][MAX];
 char	g_board_cpy[MAX][MAX];
 char	g_smallest[MAX][MAX];
-char	g_tet[27];
+char	g_tet[MAX];
 int		g_blk[] = {B0,B1,B2,B3,B4,B5,B6,B7,B8,B9,BA,BB,BC,BD,BE,BF,BG,BH,BI};
-int		g_size = MAX;
+int		g_size;
+int		g_fd;
 
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 int		set_tet(int bin)
 {
@@ -157,10 +159,10 @@ int		set_tet(int bin)
 
 	i = 0;
 	j = 0;
-	while (i < 19)
+	while (i < MAX)
 		if (bin == g_blk[i++])
 			break;
-	if (i == 19)
+	if (i == MAX)
 		return (-1);
 	j = 0;
 	while (g_tet[j] != -1)
@@ -426,42 +428,24 @@ void	clear_board()
 
 int		parse()
 {
-	int i;
-	// init g_tet
-	i = 0;
-	while (i < 27)
-	    g_tet[i++] = -1;
+	int		i;
+	char	buff[21];
 
-	clear_board();
-	g_tet[0] = 18;
-	g_tet[1] = 18;
-	g_tet[2] = 18;
-	g_tet[3] = 18;
-	g_tet[4] = 18;
-	g_tet[5] = 18;
-	g_tet[6] = 18;
-	g_tet[7] = 18;
-	g_tet[8] = 18;
-	g_tet[9] = 18;
-	g_tet[10] = 18;
-	g_tet[11] = 18;
-	g_tet[12] = 18;
-	g_tet[13] = 18;
-	g_tet[14] = 18;
-	g_tet[15] = 18;
-	g_tet[16] = 18;
-	g_tet[17] = 18;
-	g_tet[18] = 18;
-	g_tet[19] = 18;
-	g_tet[20] = 18;
-	g_tet[21] = 18;
-	g_tet[22] = 18;
-	g_tet[23] = 18;
-	g_tet[24] = 18;
-	g_tet[25] = 18;
-
-	// printf("%d\n", place_if(0,0,0));
-	// bruticus(0);
+	while ((buff[20] = '\n'))
+	{
+		i = read(g_fd, buff, 21);
+		if (i != 21 && i != 20)
+			return (1);
+		if (set_tet(to_bin(buff)) == -1)
+			return (1);
+		if (i == 20)
+		{
+			if (read(g_fd, buff, 21) == 0)
+				break;
+			else
+				return (1);
+		}
+	}
 	g_size = 1;
 	while (g_size++)
 	{
@@ -469,16 +453,22 @@ int		parse()
 		if (bruticus2(0))
 			break;
 	}
-	printf("%d\n", g_size);
-	// print_board(g_board_cpy);
-
 	return (0);
 }
 
 int		main(int ac, char **av)
 {
+	int		i;
+
 	if (ac != 2)
 		return (write(1, "error\n", 6));
+	g_fd = open(av[1], O_RDONLY);
+	if (g_fd < 1)
+		return (write(1, "error\n", 6));
+	i = 0;
+	while (i < 27)
+	    g_tet[i++] = -1;
+	clear_board();
 	if (parse())
 		return (write(1, "error\n", 6));
 	return (0);
