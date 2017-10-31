@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fillit.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nocardoz <nocardoz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: noahcardoza <noahcardoza@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/22 19:46:06 by nocardoz          #+#    #+#             */
-/*   Updated: 2017/10/30 18:33:24 by ayip             ###   ########.fr       */
+/*   Updated: 2017/10/30 19:08:33 by noahcardoza      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@
 # define NUMBLK 19
 
 # ifndef G_BLK
-
+#  define G_BLK
 int		g_blk[] = {B0, B1, B2, B3, B4, B5, B6, B7, B8, B9,
 	BA, BB, BC, BD, BE, BF, BG, BH, BI};
 
